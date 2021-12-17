@@ -1,0 +1,106 @@
+Positional target mapping from GWAS locus; conditional analysis
+
+cd /lustre/workspace/home/berghj04/HSPB7/
+
+zcat MRI_lvef_filtered.zip | head
+zcat MRI_lvef_filtered.zip | awk '{print $1, $5, $6, $7, $11, $12, $10, $17}' >  MRI_lvef_GCTAformat.txt
+head MRI_lvef_GCTAformat.txt
+
+#top locus SNP for LVEF in MRI_lvef_filtered = rs1739837; this is the SNP for conditioning
+echo rs1739837 > cond.rs1739837
+
+#edit script in HSPB7_cond_3_v1:
+cd /lustre/workspace/home/berghj04/HSPB7
+options=( --bfile /hpc/grid/hgcb/workspace/projects/P002_reference_information/plink/1000G_Eur_Chr/EUR_AllChr.phase3_V5a_norm.1 --chr 1 --maf 0.005  --cojo-file  /lustre/workspace/home/berghj04/HSPB7/MRI_lvef_GCTA$
+
+chmod u=rwx HSPB7_cond_3_v1.sh
+
+./HSPB7_cond_3_v1.sh
+*******************************************************************
+* Genome-wide Complex Trait Analysis (GCTA)
+* version 1.25.2
+* (C) 2010-2013 Jian Yang, Hong Lee, Michael Goddard and Peter Visscher
+* The University of Queensland
+* MIT License
+*******************************************************************
+Analysis started: Fri Dec  3 00:17:31 2021
+
+Options:
+--bfile /hpc/grid/hgcb/workspace/projects/P002_reference_information/plink/1000G_Eur_Chr/EUR_AllChr.phase3_V5a_norm.1
+--chr 1
+--maf 0.005
+--cojo-file /lustre/workspace/home/berghj04/HSPB7/MRI_lvef_GCTAformat.ma
+--cojo-cond /lustre/workspace/home/berghj04/HSPB7/cond.rs1739837
+--out MRI_LVEF.cond.rs1739837
+
+
+Reading PLINK FAM file from [/hpc/grid/hgcb/workspace/projects/P002_reference_information/plink/1000G_Eur_Chr/EUR_AllChr.phase3_V5a_norm.1.fam].
+404 individuals to be included from [/hpc/grid/hgcb/workspace/projects/P002_reference_information/plink/1000G_Eur_Chr/EUR_AllChr.phase3_V5a_norm.1.fam].
+Reading PLINK BIM file from [/hpc/grid/hgcb/workspace/projects/P002_reference_information/plink/1000G_Eur_Chr/EUR_AllChr.phase3_V5a_norm.1.bim].
+6234000 SNPs to be included from [/hpc/grid/hgcb/workspace/projects/P002_reference_information/plink/1000G_Eur_Chr/EUR_AllChr.phase3_V5a_norm.1.bim].
+6234000 SNPs on chromosome 1 are included in the analysis.
+Reading PLINK BED file from [/hpc/grid/hgcb/workspace/projects/P002_reference_information/plink/1000G_Eur_Chr/EUR_AllChr.phase3_V5a_norm.1.bed] in SNP-major format ...
+Genotype data for 404 individuals and 6234000 SNPs to be included from [/hpc/grid/hgcb/workspace/projects/P002_reference_information/plink/1000G_Eur_Chr/EUR_AllChr.phase3_V5a_norm.1.bed].
+Calculating allele frequencies ...
+Filtering SNPs with MAF > 0.005 ...
+After filtering SNPs with MAF > 0.005, there are 759931 SNPs (5474069 SNPs with MAF < 0.005).
+
+Reading GWAS summary-level statistics from [/lustre/workspace/home/berghj04/HSPB7/MRI_lvef_GCTAformat.ma] ...
+GWAS summary statistics of 14528279 SNPs read from [/lustre/workspace/home/berghj04/HSPB7/MRI_lvef_GCTAformat.ma].
+Phenotypic variance estimated from summary statistics of all 14528279 SNPs: 0.876962 (variance of logit for case-control studies).
+Matching the GWAS meta-analysis results to the genotype data ...
+Warning: can't match the reference alleles of 3 SNPs to those in the genotype data. These SNPs have been saved in [MRI_LVEF.cond.rs1739837.badsnps].
+742520 SNPs are matched to the genotype data.
+Calculating the variance of SNP genotypes ...
+Reading a list of given SNPs from [/lustre/workspace/home/berghj04/HSPB7/cond.rs1739837].
+1 of them are matched to the genotype and summary data.
+Performing single-SNP association analysis conditional on the 1 given SNPs ... (collinearity cutoff = 0.9)
+(Assuming complete linkage equilibrium between SNPs which are more than 10Mb away from each other)
+Saving the summary statistics of the given SNPs in the file [MRI_LVEF.cond.rs1739837.given.cojo] ...
+Saving the conditional analysis results of 742519 remaining SNPs to [MRI_LVEF.cond.rs1739837.cma.cojo] ...
+
+Analysis finished: Fri Dec  3 00:21:45 2021
+Computational time: 0:4:14
+
+head MRI_LVEF.cond.rs1739837.cma.cojo
+
+zcat NICM_HRC_GWAS_UKBB_EUR.txt.gz | head
+zcat NICM_HRC_GWAS_UKBB_EUR.txt.gz | awk '{print $1, $4, $5, $missingMAF, $6, $missingSE, $10, $7}' >  NICM_GCTAformat.ma
+
+````
+options=( --bfile /hpc/grid/hgcb/workspace/projects/P002_reference_information/plink/1000G_Eur_Chr/EUR_AllChr.phase3_V5a_norm.1
+--chr 1
+--maf 0.005
+--cojo-file /lustre/workspace/home/berghj04/HSPB7/MRI_lvef_GCTAformat.ma
+--cojo-cond /lustre/workspace/home/berghj04/HSPB7/cond.rs1739837
+--out MRI_LVEF.cond.rs1739837); /hpc/grid/hgcb/workspace/projects/GeneticsTools_BinariesAndScripts/gcta_1.25.2/gcta64 ${options[*]}
+````
+
+#Data from http://ftp.ebi.ac.uk/pub/databases/gwas/summary_statistics/GCST90018001-GCST90019000/GCST90018834/
+head GCST90018834_buildGRCh37.tsv
+chromosome	base_pair_location	effect_allele	other_allele	effect_allele_frequency	beta	standard_error	p_value	variant_id
+1	100000012	T	G	0.276823353966032	-0.0300	0.0376	0.4242	NA
+1	10000006	A	G	0.00469708538711048	0.4156	0.2944	0.1581	NA
+1	100000135	T	A	0.00189704162298916	-0.4897	0.4417	0.2676	NA
+1	100000374	C	G	0.000579622291315996	1.1070	1.4938	0.4586	NA
+1	100000827	T	C	0.319358613909612	-0.0570	0.0357	0.111	NA
+1	100000843	C	T	0.0425392252964622	-0.1459	0.0796	0.06695	NA
+1	100000989	ATC	A	0.0408207942370326	-0.132	0.0815	0.1052	NA
+1	100001138	G	A	0.0174569423865407	0.1747	0.1232	0.1561	NA
+1	100001201	T	G	0.0975190283214967	0.0044	0.0630	0.9444	NA
+
+#Total, from GWAS catalog n = 355381 European + 178162 East Asian = 533543
+
+GCTA format is column order:
+1 = SNP ID
+2 = effect allele
+3 = other allele
+4 = freq of effect allele
+5 = effect size
+6 = standard error
+7 = p-value
+8 = n samples
+
+awk '{print $missingSNPID, $3, $4, $5, $6, $7, $8, $missingN}' >  DCM_GCST90018834_GCTAformat.ma
+
+#Ben Alexander has a GWAS harmonizing pipeline, take advantage
